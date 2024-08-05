@@ -12,6 +12,7 @@ import {
   Cell,
   ResponsiveContainer,
 } from 'recharts'
+import {IoInformationCircleOutline} from 'react-icons/io5'
 import './MyDashboard.css'
 
 const sidebarList = [
@@ -28,6 +29,19 @@ const sidebarList = [
   {id: 'account', name: 'Account'},
 ]
 
+const lineData = [
+  {name: '6/30/2024-7/6/2024', Orders: 4, Sales: 1404},
+  {name: '7/7/2024-7/13/2024', Orders: 2.0, Sales: 800},
+  {name: '7/21/2024-7/27/2024', Orders: 2, Sales: 500},
+]
+
+const pieData = [
+  {name: 'WooCommerce Store', value: 55.8, color: '#FF6384'},
+  {name: 'Shopify Store', value: 42.2, color: '#36A2EB'},
+]
+
+const formatYAxis = value => `${(value / 1000).toFixed(1)}k` // Convert to k format
+
 class MyDashboard extends Component {
   state = {activeMenu: 'dashboard'}
 
@@ -37,20 +51,6 @@ class MyDashboard extends Component {
 
   render() {
     const {activeMenu} = this.state
-    const lineData = [
-      {name: '6/30/2024-7/6/2024', Orders: 4, Sales: 1404},
-      {name: '7/7/2024-7/13/2024', Orders: 2.0, Sales: 800},
-      {name: '7/21/2024-7/27/2024', Orders: 2, Sales: 500},
-    ]
-
-    const pieData = [
-      {name: 'WooCommerce Store', value: 55.8, color: '#FF6384'},
-      {name: 'Shopify Store', value: 42.2, color: '#36A2EB'},
-    ]
-
-    const formatYAxis = value => {
-      return `${(value / 1000).toFixed(1)}k` // Convert to k format
-    }
 
     return (
       <div className="dashboard-container">
@@ -61,7 +61,7 @@ class MyDashboard extends Component {
                 key={each.id}
                 className={
                   activeMenu === each.id
-                    ? 'active-siderbar-item'
+                    ? 'active-sidebar-item'
                     : 'sidebar-list-item'
                 }
                 onClick={() => this.handleClick(each.id)}
@@ -71,13 +71,17 @@ class MyDashboard extends Component {
             ))}
           </ul>
         </aside>
-        <div>
+        <div className="content">
           <header className="header">
             <h2 className="dashboard-title">Dashboard</h2>
           </header>
           <main className="main-content">
             <div className="bar-chart-container">
-              <h2 className="chart-title">Sales vs Orders</h2>
+              <div className="chart-title-container">
+                <h2 className="chart-title">Sales vs Orders</h2>
+                <IoInformationCircleOutline className="info-icon" />
+              </div>
+
               <hr />
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart
@@ -101,7 +105,6 @@ class MyDashboard extends Component {
                     dataKey="Sales"
                     stroke="#008080"
                   />
-
                   <Legend
                     layout="horizontal"
                     verticalAlign="top"
@@ -112,7 +115,10 @@ class MyDashboard extends Component {
             </div>
 
             <div className="pie-chart-container">
-              <h2 className="chart-title">Portion of Sales</h2>
+              <div className="chart-title-container">
+                <h2 className="chart-title">Portion of Sales</h2>
+                <IoInformationCircleOutline className="info-icon" />
+              </div>
               <hr />
               <ResponsiveContainer width="100%" height={350}>
                 <PieChart>
@@ -126,8 +132,8 @@ class MyDashboard extends Component {
                     outerRadius="80%"
                     dataKey="value"
                   >
-                    {pieData.map(index => (
-                      <Cell key={`cell-${index}`} fill={index.color} />
+                    {pieData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
                   <Legend
